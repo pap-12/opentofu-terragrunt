@@ -1,0 +1,31 @@
+name: Deploy Terragrunt
+on:
+  workflow_dispatch:
+  
+env:
+  TERRAGRUNT_VERSION: v0.55.20
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  
+jobs:
+  terragrunt-deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+          
+      - name: Set up Opentofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.6.0
+          tofu_wrapper: false
+            
+      - name: Set up Terragrunt
+        run: |
+          mkdir bin
+          wget -O bin/terragrunt https://github.com/gruntwork-io/terragrunt/releases/download/v$TERRAGRUNT_VERSION/terragrunt_linux_amd64
+          chmod +x bin/terragrunt
+          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+      - name: Deploy
+        run: terragrunt run-all plan --terragrunt-non-interactive
