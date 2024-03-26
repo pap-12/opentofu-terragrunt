@@ -8,6 +8,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: opentofu/setup-opentofu@v1
+      - name: Setup Opentofu
+        uses: opentofu/setup-opentofu@v1
         with:
           tofu_version: 1.6.2
+      - name: OpenTofu fmt
+        id: fmt
+        run: tofu fmt -check
+        continue-on-error: true
