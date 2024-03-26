@@ -1,6 +1,10 @@
 name: Deploy Opentofu Project
 on:
   workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: live/dev/s3
     
 jobs:
   tofu-apply:
@@ -21,19 +25,13 @@ jobs:
         
       - name: OpenTofu Init
         id: init
-        run: |
-          cd live/dev/s3
-          tofu init
+        run: tofu init
         
       - name: OpenTofu Validate
         id: validate
-        run: |
-          cd live/dev/s3
-          tofu validate -no-color
+        run: tofu validate -no-color
       
       - name: OpenTofu Plan
         id: plan
-        run: |
-          cd live/dev/s3
-          tofu plan -no-color
+        run: tofu plan -no-color
         continue-on-error: true
